@@ -388,7 +388,6 @@ app.get('/api/track-visit', async (req, res) => {
 });
 
 
-// Review Schema and Model
 const ReviewSchema = new mongoose.Schema({
     user: String,
     rating: Number,
@@ -413,35 +412,16 @@ app.post('/api/reviews', async (req, res) => {
     }
 });
 
-// Route to Retrieve All Reviews
-app.get('/api/reviews', async (req, res) => {
+
+app.get('/api/getReviews', async (req, res) => {
     try {
-        const reviews = await Review.find().sort({ createdAt: -1 });
+        const reviews = await Review.find().sort({ createdAt: -1 }).limit(3);
         res.status(200).json(reviews);
     } catch (error) {
-        console.error('Error retrieving reviews:', error);
+        console.error('Error retrieving reviews:', error); // Log the error
         res.status(500).json({ error: 'Failed to retrieve reviews.' });
     }
 });
-
-// Route to Delete a Review by ID
-app.delete('/api/reviews/:id', async (req, res) => {
-    const reviewId = req.params.id;
-
-    try {
-        const result = await Review.findByIdAndDelete(reviewId);
-
-        if (!result) {
-            return res.status(404).json({ error: 'Review not found' });
-        }
-
-        res.status(200).json({ message: 'Review deleted successfully' });
-    } catch (error) {
-        console.error('Error deleting review:', error);
-        res.status(500).json({ error: 'Failed to delete review.' });
-    }
-});
-
 
 
 // Start the server
